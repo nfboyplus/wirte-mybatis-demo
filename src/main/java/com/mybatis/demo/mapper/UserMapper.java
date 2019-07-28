@@ -19,4 +19,8 @@ public interface UserMapper {
     @ExtInsert("insert into test_user(name,age) values(#{name},#{age})")
     int insertUser(@ExtParam("name") String name, @ExtParam("age") Integer age);
 
+    /**
+     * 如果查询是List<User>
+     */
+
 }

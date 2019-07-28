@@ -85,6 +85,7 @@ public class MyInvocationHandlerMybatis implements InvocationHandler {
             ResultSet rs = JDBCUtils.query(newSql, paramValues);
             // 获取返回类型
             Class<?> returnType = method.getReturnType();
+            //todo:如果查询是List，此处要判断类型，且 new ArrayList
             if (!rs.next()) {
                 // 没有查找数据
                 return null;
