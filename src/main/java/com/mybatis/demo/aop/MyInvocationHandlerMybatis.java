@@ -94,16 +94,26 @@ public class MyInvocationHandlerMybatis implements InvocationHandler {
             // 实例化对象
             Object newInstance = returnType.newInstance();
             while (rs.next()) {
-                for (String parameterName : sqlSelectParameter) {
-                    // 获取集合中数据
-                    Object value = rs.getObject(parameterName);
-                    // 查找对应属性
-                    Field field = returnType.getDeclaredField(parameterName);
+                //获取当前所有的属性
+                Field[] fields = returnType.getDeclaredFields();
+                for (Field field : fields) {
+                    String fieldName = field.getName();
+                    Object object = rs.getObject(fieldName);
                     // 设置允许私有访问
                     field.setAccessible(true);
                     // 赋值参数
-                    field.set(newInstance, value);
+                    field.set(newInstance, object);
                 }
+//                for (String parameterName : sqlSelectParameter) {
+//                    // 获取集合中数据
+//                    Object value = rs.getObject(parameterName);
+//                    // 查找对应属性
+//                    Field field = returnType.getDeclaredField(parameterName);
+//                    // 设置允许私有访问
+//                    field.setAccessible(true);
+//                    // 赋值参数
+//                    field.set(newInstance, value);
+//                }
             }
             return newInstance;
         } catch (Exception e) {
@@ -120,7 +130,7 @@ public class MyInvocationHandlerMybatis implements InvocationHandler {
         //获取方法上的参数
         Parameter[] parameters = method.getParameters();
         //将方法上的参数放在Map集合中
-        ConcurrentHashMap<Object,Object> parameterMap = getExtParams(parameters, args);
+        ConcurrentHashMap<Object, Object> parameterMap = getExtParams(parameters, args);
         //获取SQL语句上需要传递的参数
         String[] sqlParameter = SQLUtils.sqlInsertParameter(insertSql);
         List<Object> paramValues = new ArrayList<>();
